@@ -14,15 +14,6 @@ const CustomImage = ({ imageUrl, id, deleteSticker }) => {
     deleteSticker(id);
   };
 
-  const getPositionForDusbin = () => {
-    const imgNode = imgRef.current;
-    const pos = {
-      x: imgNode.x() + imgNode.width() - 30,
-      y: imgNode.y() - 40,
-    };
-    return pos;
-  };
-
   useEffect(() => {
     // function handleOutsideClick(e) {
     //   console.log("eTarget",e.target)
@@ -66,10 +57,7 @@ const CustomImage = ({ imageUrl, id, deleteSticker }) => {
               return newBox;
             }}
           />
-          <Dustbin
-            pos={getPositionForDusbin()}
-            deleteSomething={deleteSomething}
-          />
+          <Dustbin deleteSomething={deleteSomething} />
         </>
       )}
     </>

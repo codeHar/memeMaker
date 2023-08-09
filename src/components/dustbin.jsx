@@ -3,7 +3,7 @@ import dustbinImg from "/assets/dustbin.png";
 import { Image } from "react-konva";
 import { Html } from "react-konva-utils";
 
-const Dustbin = ({ pos, deleteSomething }) => {
+const Dustbin = ({  deleteSomething }) => {
   // const [dustbin] = useImage(dustbinImg);
 
   return (

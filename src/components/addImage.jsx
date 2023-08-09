@@ -1,19 +1,19 @@
 import { useRef } from "react";
 
-const AddSticker = ({ addNewSticker }) => {
+const AddImage = ({ addImage,btnTitle='Add Image' }) => {
   const fileUploadRef = useRef();
 
   const handleFile = (e) => {
     const sticker = e?.target?.files[0];
     if (sticker) {
       const stickerUrl = window.URL.createObjectURL(sticker);
-      addNewSticker(stickerUrl);
+      addImage(stickerUrl);
     }
   };
 
   return (
     <>
-      <button onClick={() => fileUploadRef.current.click()}>Add Sticker</button>
+      <button onClick={() => fileUploadRef.current.click()}>{btnTitle}</button>
       <input
         type="file"
         ref={fileUploadRef}
@@ -25,4 +25,4 @@ const AddSticker = ({ addNewSticker }) => {
   );
 };
 
-export default AddSticker;
+export default AddImage;

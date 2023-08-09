@@ -2,41 +2,65 @@ import { Stage, Layer, Image } from "react-konva";
 import { useRef, useState } from "react";
 import useImage from "use-image";
 import CustomText from "./customText";
-import AddSticker from "./addSticker";
+import AddImage from "./addImage";
 import CustomImage from "./customImage";
 import DownloadToImage from "./download";
 import digCam from "/assets/digCam.jpg";
 import CONFIG from "../const/config.const";
-
-const DigitalCam = ({ width, height }) => {
-  const [image] = useImage(digCam);
-
-  return <Image image={image} width={width} height={height} />;
-};
+import CustomOverlay from "./customOverlay";
 
 const CanvasEditorUsingKonva = () => {
   const stageRef = useRef();
   const [textFields, setTextFields] = useState([]);
   const [stickers, setStickers] = useState([]);
+  const [items, setItems] = useState([]);
+  const [backgroundImgUrl, setBackgroundImgUrl] = useState(digCam);
+  const [image] = useImage(backgroundImgUrl);
+  const backgroundImg = (
+    <Image
+      image={image}
+      width={CONFIG.EDITOR_WIDTH}
+      height={CONFIG.EDITOR_HEIGHT}
+    />
+  );
+
+  console.log("Items", items);
 
   const addNewText = () => {
-    setTextFields((prevArr) => [...prevArr, prevArr.length + 1]);
+    setItems((prevArr) => [
+      ...prevArr,
+      { id: prevArr.length + 1, type: "text" },
+    ]);
   };
 
   const addNewSticker = (stickerUrl) => {
-    setStickers((prevArr) => [...prevArr, { stickerUrl }]);
+    setItems((prevArr) => [
+      ...prevArr,
+      { id: prevArr.length + 1, stickerUrl, type: "sticker" },
+    ]);
   };
 
-  const deleteText = (id) => {
-    const newArr = [...textFields];
-    newArr[newArr.indexOf(id)] = null;
-    setTextFields(newArr);
+  const addNewOverlay = () => {
+    setItems((prevArr) => [
+      ...prevArr,
+      { id: prevArr.length + 1, type: "overlay" },
+    ]);
   };
 
-  const deleteSticker = (id) => {
-    const newArr = [...stickers];
-    newArr[newArr.indexOf(id)] = null;
-    setStickers(newArr);
+  const deleteItem = (id) => {
+    console.log("id", id);
+    const newArr = [...items];
+    const item = newArr.find((item) => item?.id === id);
+    if (item) {
+      newArr[newArr.indexOf(item)] = null;
+      setItems(newArr);
+    }
+  };
+
+  const changeBackground = (stickerUrl) => {
+    if (stickerUrl) {
+      setBackgroundImgUrl(stickerUrl);
+    }
   };
 
   return (
@@ -48,9 +72,41 @@ const CanvasEditorUsingKonva = () => {
         className="bg-gray-200 mx-auto w-full md:w-max"
       >
         <Layer>
-          <DigitalCam width={500} height={500} />
+          {backgroundImg}
 
-          {textFields.length > 0 &&
+          {items.length > 0 &&
+            items.map((item, i) => {
+              if (!item) return null;
+              if (item.type === "text") {
+                return (
+                  <CustomText
+                    id={item.id}
+                    key={i}
+                    stageRef={stageRef}
+                    deleteText={deleteItem}
+                  />
+                );
+              } else if (item.type === "sticker") {
+                return (
+                  <CustomImage
+                    id={item.id}
+                    key={i}
+                    imageUrl={item.stickerUrl}
+                    deleteSticker={deleteItem}
+                  />
+                );
+              } else if (item.type === "overlay") {
+                return (
+                  <CustomOverlay
+                    id={item.id}
+                    key={i}
+                    deleteOverlay={deleteItem}
+                  />
+                );
+              }
+            })}
+
+          {/* {textFields.length > 0 &&
             textFields.map((tf, i) => {
               if (tf) {
                 return (
@@ -80,18 +136,24 @@ const CanvasEditorUsingKonva = () => {
               } else {
                 return null;
               }
-            })}
+            })} */}
         </Layer>
       </Stage>
 
-      <div className="w-[500px] mx-auto mt-5 flex gap-3">
+      <div className="w-[500px] mx-auto mt-5 flex flex-wrap gap-3">
         <div className="p-2 rounded-lg bg-blue-300">
           <button onClick={addNewText}>Add text</button>
         </div>
         <div className="p-2 rounded-lg bg-yellow-300">
-          <AddSticker addNewSticker={addNewSticker} />
+          <AddImage addImage={addNewSticker} btnTitle="Add Sticker" />
         </div>
-        <div className=" bg-green-300">
+        <div className="p-2 rounded-lg bg-red-300">
+          <button onClick={addNewOverlay}>Add Overlay</button>
+        </div>
+        <div className="p-2 rounded-lg bg-green-300">
+          <AddImage addImage={changeBackground} btnTitle="Change Background" />
+        </div>
+        <div className=" bg-orange-300">
           <DownloadToImage node={stageRef} />
         </div>
       </div>

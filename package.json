@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-konva": "^18.2.10",
     "react-konva-utils": "^1.0.5",
+    "rgb-hex": "^4.0.1",
     "use-image": "^1.1.1"
   },
   "devDependencies": {

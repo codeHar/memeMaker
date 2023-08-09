@@ -214,7 +214,6 @@ const CustomText = ({ stageRef, id, deleteText }) => {
             }}
           />
           <Dustbin
-            pos={getPositionForDusbin()}
             deleteSomething={deleteSomething}
           />
           <Html
